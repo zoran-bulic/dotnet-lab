@@ -1,0 +1,74 @@
+﻿<Window x:Class="OrdersHandler.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OrdersHandler.UI"
+        xmlns:viewmodel="clr-namespace:OrdersHandler.UI.ViewModel"        
+        mc:Ignorable="d"
+        Title="Orders Handling" Height="450" Width="800">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Button Command="{Binding GetAllOrdersCommand}" Content="Get All Orders" Width="200" Height="23" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label  Content="Order ID: " Width="100" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBox Text="{Binding Path=OrderId,Mode=TwoWay}" HorizontalAlignment="Left" Width="50" />
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Button Command="{Binding GetOrderCommand}" Content="Get Order" Width="200" Height="23" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label  Content="User: " Width="100" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBox Text="{Binding Path=User,Mode=TwoWay}" HorizontalAlignment="Left" Width="100"/>
+        </StackPanel>        
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Button Command="{Binding GetUndeliveredOrdersForUserCommand}" Content="Get Undelivered Orders For User" Width="200" Height="23"  HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label  Content="Address: " Width="100" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBox Text="{Binding Path=Address,Mode=TwoWay}" HorizontalAlignment="Left" Width="100"/>
+        </StackPanel>
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <Button Command="{Binding GetDeliveredOrdersForUserCommand}" Content="Get Delivered Orders For User" Width="200" Height="23"  HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label  Content="State: " Width="100" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBox Text="{Binding Path=State,Mode=TwoWay}" HorizontalAlignment="Left" Width="100"/>
+        </StackPanel>
+        <StackPanel Grid.Row="4" Orientation="Horizontal">
+            <Button Command="{Binding IsOrderDeliveredCommand}" Content="Is Order Delivered?" Width="200" Height="23" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label  Content="Message: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label  Content="{Binding Message}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </StackPanel>
+        <StackPanel Grid.Row="5" Orientation="Horizontal">
+            <Button Command="{Binding DeliverOrderCommand}" Content="Deliver Order" Width="200" Height="23" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </StackPanel>
+        <StackPanel Grid.Row="6" Orientation="Horizontal">
+            <Button Command="{Binding UpdateOrderCommand}" Content="Update Order (Address, State)" Width="200" Height="23" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </StackPanel>
+        <StackPanel Grid.Row="7" Orientation="Horizontal">
+            <Button Command="{Binding CreateNewOrderCommand}" Content="Create New Order" Width="200" Height="23" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </StackPanel>
+        <StackPanel Grid.Row="8" Orientation="Horizontal">
+            <Label  Content="Message: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label  Content="{Binding Message}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </StackPanel>
+        <DataGrid Grid.Row="9" Name="OrdersDataGrid" ItemsSource="{Binding OrdersModel.Orders}" AutoGenerateColumns="False" 
+                  IsReadOnly="True" AlternatingRowBackground="LightBlue" AlternationCount="2" VerticalScrollBarVisibility="Visible">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="OrderId" Binding="{Binding Id}" Width="1*"/>
+                <DataGridTextColumn Header="User" Binding="{Binding User}" Width="2*"/>
+                <DataGridTextColumn Header="CreationDate" Binding="{Binding CreationDate}" Width="3*"/>
+                <DataGridTextColumn Header="DeliveryData" Binding="{Binding DeliveryDate}" Width="3*"/>
+                <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="5*"/>
+                <DataGridTextColumn Header="State" Binding="{Binding State}" Width="2*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

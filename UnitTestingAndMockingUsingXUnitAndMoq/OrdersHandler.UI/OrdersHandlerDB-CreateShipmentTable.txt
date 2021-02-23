@@ -1,0 +1,9 @@
+﻿	CREATE TABLE "Order" (
+		"Id"	INTEGER NOT NULL UNIQUE,
+		"User"	TEXT NOT NULL,
+		"CreationDate"	TEXT NOT NULL,
+		"DeliveryDate"	TEXT,
+		"Address"	TEXT,
+		"State"	TEXT NOT NULL,
+		PRIMARY KEY("OrderId" AUTOINCREMENT)
+	);
