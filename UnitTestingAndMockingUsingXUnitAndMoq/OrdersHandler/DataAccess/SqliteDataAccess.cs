@@ -14,10 +14,24 @@ namespace OrdersHandler.DataAccess
     public class SqliteDataAccess : IDbDataAccess
     {
         private const string _sqliteConnectionStringId = "SQLite";
+        private string _connString;
+
+        public SqliteDataAccess(ConnectionStringSettings connStringSetting = null)
+        {
+            if(connStringSetting != null)
+            {
+                _connString = connStringSetting.ConnectionString;
+            }
+            else
+            {
+                _connString = LoadConnectionString("SQLite");
+            }
+        }
+
 
         public List<T> LoadData<T>(string sql)
         {
-            using (IDbConnection conn = new SQLiteConnection(LoadConnectionString()))
+            using (IDbConnection conn = new SQLiteConnection(_connString))
             {
                 var output = conn.Query<T>(sql, new DynamicParameters());
                 return output.ToList();
@@ -26,7 +40,7 @@ namespace OrdersHandler.DataAccess
 
         public T LoadData<T>(string sql, int orderId)
         {
-            using (IDbConnection conn = new SQLiteConnection(LoadConnectionString()))
+            using (IDbConnection conn = new SQLiteConnection(_connString))
             {
                 var output = conn.Query<T>(sql, orderId);
                 if (output != null && output.Count() > 0)
@@ -39,15 +53,15 @@ namespace OrdersHandler.DataAccess
 
         public void SaveData<T>(string sql, T order) 
         {
-            using (IDbConnection conn = new SQLiteConnection(LoadConnectionString()))
+            using (IDbConnection conn = new SQLiteConnection(_connString))
             {
-                conn.Execute(sql, order);                
+                conn.ExecuteScalar<T>(sql, order);                
             }
         }
 
         public void UpdateData<T>(string sql, T order)
         {
-            using (IDbConnection conn = new SQLiteConnection(LoadConnectionString()))
+            using (IDbConnection conn = new SQLiteConnection(_connString))
             {
                 conn.ExecuteScalar(sql, order);
             }
