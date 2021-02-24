@@ -12,6 +12,13 @@ namespace OrdersHandler
     {
         private IDbDataAccess _database;
 
+        private enum DateComparisonResult
+        {
+            Earlier = -1,
+            Later = 1,
+            TheSame = 0
+        };
+
         public OrderProcessor(IDbDataAccess database)
         {
             _database = database;
@@ -61,6 +68,13 @@ namespace OrdersHandler
             var order = _database.LoadData<OrderModel>(sql, orderId);
             order.DeliveryDate = delivered;
 
+            DateComparisonResult result = (DateComparisonResult)delivered.CompareTo(order.CreationDate);
+
+            if (result == DateComparisonResult.Earlier)
+            {
+                throw new ArgumentException("DeliveryDate earlier than CreationDate", "DeliveryDate");
+            }
+
             string deliveryDateTimeFormated = order.DeliveryDate.ToString("yyyy-MM-dd HH:MM:ss");
             string sqlUpdate = $"UPDATE Shipment SET DeliveryDate='{deliveryDateTimeFormated}', State='{OrderState.Delivered}' WHERE Id='{orderId}'";
             _database.UpdateData<OrderModel>(sqlUpdate, order);
@@ -89,5 +103,6 @@ namespace OrdersHandler
             string sql = $"INSERT INTO Shipment (User, CreationDate, Address, State) VALUES (@User, @CreationDate, @Address, @State);";
             _database.SaveData<OrderModel>(sql, order);
         }
+
     }
 }
