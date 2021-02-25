@@ -33,20 +33,20 @@ namespace OrdersHandler.UI.ViewModel
         IOrderProcessor orderProcessor = new OrderProcessor(new SqliteDataAccess());
 
         #region Properties
-        public int OrderId { get => orderId; set => SetProperty(ref orderId, value, "OrderId"); }
-        public string User { get => user; set => SetProperty(ref user, value, "User"); }
-        public string Message { get => message; set => SetProperty(ref message, value, "Message"); }
-        public DateTime DeliveryDate { get => deliveryDate; set => SetProperty(ref deliveryDate, value, "DeliveryDate"); }
-        public string Address { get => address; set => SetProperty(ref address, value, "Address"); }
-        public OrderState State { get => state; set => SetProperty(ref state, value, "State"); }
-        public OrdersModel OrdersModel { get => ordersModel; set => SetProperty(ref ordersModel, value, "OrdersModel"); }
+        public int OrderId { get => orderId; set => SetProperty(ref orderId, value); }
+        public string User { get => user; set => SetProperty(ref user, value); }
+        public string Message { get => message; set => SetProperty(ref message, value); }
+        public DateTime DeliveryDate { get => deliveryDate; set => SetProperty(ref deliveryDate, value); }
+        public string Address { get => address; set => SetProperty(ref address, value); }
+        public OrderState State { get => state; set => SetProperty(ref state, value); }
+        public OrdersModel OrdersModel { get => ordersModel; set => SetProperty(ref ordersModel, value); }
         #endregion // Properties
 
         #region Commands
-        public ICommand GetAllOrdersCommand
-        {
-            get { return getAllOrdersCommand; }
-            private set { getAllOrdersCommand = value; }
+        public ICommand GetAllOrdersCommand 
+        { 
+            get => getAllOrdersCommand; 
+            private set { getAllOrdersCommand = value; } 
         }
         public ICommand GetOrderCommand
         {
