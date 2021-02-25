@@ -30,7 +30,7 @@ namespace OrdersHandler.UI.ViewModel
         private ICommand updateOrderCommand;
         private ICommand createNewOrderCommand;
 
-        IOrderProcessor orderProcessor = new OrderProcessor(new SqliteDataAccess());
+        IOrderProcessor orderProcessor;
 
         #region Properties
         public int OrderId { get => orderId; set => SetProperty(ref orderId, value); }
@@ -44,90 +44,131 @@ namespace OrdersHandler.UI.ViewModel
 
         #region Commands
         public ICommand GetAllOrdersCommand 
-        { 
-            get => getAllOrdersCommand; 
-            private set { getAllOrdersCommand = value; } 
+        {
+            get
+            {
+                if (getAllOrdersCommand == null)
+                {
+                    getAllOrdersCommand = new RelayCommand(p => GetAllOrders());
+                }
+                return getAllOrdersCommand;
+            }            
         }
         public ICommand GetOrderCommand
         {
-            get { return getOrderCommand; }
-            private set { getOrderCommand = value; }
+            get
+            {
+                if (getOrderCommand == null)
+                {
+                    getOrderCommand = new RelayCommand(p => GetOrder());
+                }
+                return getOrderCommand;
+            }            
         }
 
         public ICommand GetUndeliveredOrdersForUserCommand
         {
-            get { return getUndeliveredOrdersForUserCommand; }
-            private set { getUndeliveredOrdersForUserCommand = value; }
+            get
+            {
+                if (getUndeliveredOrdersForUserCommand == null)
+                {
+                    getUndeliveredOrdersForUserCommand = new RelayCommand(p => GetUndeliveredOrdersForUser());
+                }
+                return getUndeliveredOrdersForUserCommand;
+            }
         }
 
         public ICommand GetDeliveredOrdersForUserCommand
         {
-            get { return getDeliveredOrdersForUserCommand; }
-            private set { getDeliveredOrdersForUserCommand = value; }
+            get
+            {
+                if (getDeliveredOrdersForUserCommand == null)
+                {
+                    getDeliveredOrdersForUserCommand = new RelayCommand(p => GetDeliveredOrdersForUser());
+                }
+                return getDeliveredOrdersForUserCommand;
+            }            
         }
 
         public ICommand IsOrderDeliveredCommand
         {
-            get { return isOrderDeliveredCommand; }
-            private set { isOrderDeliveredCommand = value; }
+            get
+            {
+                if (isOrderDeliveredCommand == null)
+                {
+                    isOrderDeliveredCommand = new RelayCommand(p => IsOrderDelivered());
+                }
+                return isOrderDeliveredCommand;
+            }            
         }
         public ICommand DeliverOrderCommand
         {
-            get { return deliverOrderCommand; }
-            private set { deliverOrderCommand = value; }
+            get
+            {
+                if (deliverOrderCommand == null)
+                {
+                    deliverOrderCommand = new RelayCommand(p => DeliverOrder());
+                }
+                return deliverOrderCommand;
+            }            
         }
         public ICommand UpdateOrderCommand
         {
-            get { return updateOrderCommand; }
-            private set { updateOrderCommand = value; }
+            get
+            {
+                if (updateOrderCommand == null)
+                {
+                    updateOrderCommand = new RelayCommand(p => UpdateOrder());
+                }
+                return updateOrderCommand;
+            }            
         }
         public ICommand CreateNewOrderCommand
         {
-            get { return createNewOrderCommand; }
-            private set { createNewOrderCommand = value; }
+            get
+            {
+                if (createNewOrderCommand == null)
+                {
+                    createNewOrderCommand = new RelayCommand(p => CreateNewOrder());
+                }
+                return createNewOrderCommand;
+            }
         }        
         #endregion // Commands
 
-        public MainWindowViewModel()
+        public MainWindowViewModel() 
         {
-            GetAllOrdersCommand = new RelayCommand(GetAllOrders);
-            GetOrderCommand = new RelayCommand(GetOrder);
-            GetUndeliveredOrdersForUserCommand = new RelayCommand(GetUndeliveredOrdersForUser);
-            GetDeliveredOrdersForUserCommand = new RelayCommand(GetDeliveredOrdersForUser);
-            IsOrderDeliveredCommand = new RelayCommand(IsOrderDelivered);
-            DeliverOrderCommand = new RelayCommand(DeliverOrder);
-            UpdateOrderCommand = new RelayCommand(UpdateOrder);
-            CreateNewOrderCommand = new RelayCommand(CreateNewOrder);
-    }
+            orderProcessor = new OrderProcessor(new SqliteDataAccess());            
+        }
 
-        public void GetAllOrders(object obj)
+        public void GetAllOrders()
         {
             Message = $"GetAllOrders() called";
             var orders = orderProcessor.GetAllOrders();
             OrdersModel = new OrdersModel(orders);
         }
 
-        public void GetOrder(object obj)
+        public void GetOrder()
         {
             Message = $"GetOrder() called, OrderId: '{OrderId}'";
             var order = orderProcessor.GetOrder(OrderId);
             OrdersModel = new OrdersModel(order);            
         }
 
-        public void GetUndeliveredOrdersForUser(object obj)
+        public void GetUndeliveredOrdersForUser()
         {
             Message = "GetUndeliveredOrdersForUser() called";
             var orders = orderProcessor.GetUndeliveredOrdersForUser(User);
             OrdersModel = new OrdersModel(orders);
         }
-        public void GetDeliveredOrdersForUser(object obj)
+        public void GetDeliveredOrdersForUser()
         {
             Message = "GetDeliveredOrdersForUser() called";
             var orders = orderProcessor.GetDeliveredOrdersForUser(User);
             OrdersModel = new OrdersModel(orders);
         }
 
-        public void IsOrderDelivered(object obj)
+        public void IsOrderDelivered()
         {
             Message = "IsOrderDelivered() called";
             bool isOrderDelivered = orderProcessor.IsOrderDelivered(OrderId);
@@ -135,7 +176,7 @@ namespace OrdersHandler.UI.ViewModel
                 $"Order Id:{OrderId} is still NOT delivered";
         }
 
-        public void DeliverOrder(object obj)
+        public void DeliverOrder()
         {
             Message = "DeliverOrder() called";
             DateTime deliveryDate = DateTime.Now;
@@ -143,14 +184,14 @@ namespace OrdersHandler.UI.ViewModel
             Message = $"Order Id:{OrderId} is delivered with date: '{deliveryDate}'";                
         }
 
-        public void UpdateOrder(object obj)
+        public void UpdateOrder()
         {
             Message = "UpdateOrder(Address, State) called";
             orderProcessor.UpdateOrder(OrderId, Address, State);
 
         }
 
-        public void CreateNewOrder(object obj)
+        public void CreateNewOrder()
         {
             Message = "CreateNewOrder(User, Address) called";
             orderProcessor.CreateNewOrder(User, Address);
