@@ -6,12 +6,13 @@ This example was created in order to learn and refresh knowledge of the two very
 In oder to learning and use the frameworks, I found two very good youtube videos from Tim Corey (IAmTimCorey) explaining the unit testing and mocking:
 - [Intro to Unit Testing in C# using XUnit](https://www.youtube.com/watch?v=ub3P8c87cwk)
 - [Mocking in C# Unit Tests - How To Test Data Access Code and More](https://www.youtube.com/watch?v=DwbYxP-etMY)
+
 which examples and sample code were used as a basis for my test project.
 
 The application idea was my own: a simple sample application used for handling the orders. For the purpose of using database as the Data Access Layer, I I used [SQLite](https://www.sqlite.org/index.html) as a simple and small SQL database which could easily be deployed with the solution.
 
 I used another youtube video and sample code from Tim Corey as a source:
-[Using SQLite in C# - Building Simple, Powerful, Portable Databases for Your Application](https://www.youtube.com/watch?v=ayp3tHEkRc0)
+- [Using SQLite in C# - Building Simple, Powerful, Portable Databases for Your Application](https://www.youtube.com/watch?v=ayp3tHEkRc0)
 
 ## Project Structure
 - OrdersHandler: class library containing the DAL (Data Access Layer) and BL (Business Logic) (.NET Framework 4.7.2)
