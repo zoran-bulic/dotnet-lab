@@ -82,6 +82,11 @@ namespace OrdersHandler
 
         public void UpdateOrder(int orderId, string address, OrderState state)
         {
+            if (string.IsNullOrEmpty(address) || string.IsNullOrWhiteSpace(address))
+            {
+                throw new ArgumentException("Address is null or empty", "Address");
+            }
+
             string sql = $"select * from Shipment where Id={orderId}";
             var order = _database.LoadData<OrderModel>(sql, orderId);
             order.Address = address;

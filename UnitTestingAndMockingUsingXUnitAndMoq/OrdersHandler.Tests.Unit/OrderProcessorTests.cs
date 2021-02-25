@@ -91,8 +91,30 @@ namespace OrdersHandler.Tests.Unit
             Assert.False(actual);
         }
 
-        [Fact]
-        public void UpdateOrder_UpdateDataMethodShouldBeCalledOnlyOnce()
+        [Theory]
+        [InlineData("Wien", OrderState.Sent)]
+        public void UpdateOrder_UpdateDataMethodShouldBeCalledOnlyOnce_ForValidData(string address, OrderState state)
+        {
+            // Arrange
+            OrderModel expected = GetSampleOrder();
+            string sql = $"select * from Shipment where Id={expected.Id}";
+            _dbDataAccessMock
+                .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
+                .Returns(expected);
+
+            // Act
+            var actual = _orderProcessor.GetOrder(expected.Id);
+            _orderProcessor.UpdateOrder(actual.Id, address, state);
+
+            // Assert
+            sql = $"UPDATE Shipment SET Address='{actual.Address}', State='{actual.State}' WHERE Id='{actual.Id}'";
+            _dbDataAccessMock.Verify(x => x.UpdateData<OrderModel>(sql, actual), Times.Once);
+        }
+
+        [Theory]
+        [InlineData("", OrderState.Sent)]
+        [InlineData(" ", OrderState.Delivered)]        
+        public void UpdateOrder_UpdateFails_ForInvalidAddress(string address, OrderState state)
         {
             // Arrange
             OrderModel expected = GetSampleOrder();
@@ -104,13 +126,10 @@ namespace OrdersHandler.Tests.Unit
             // Act
             var actual = _orderProcessor.GetOrder(expected.Id);
 
-            actual.Address = "Wien";
-            actual.State = OrderState.Sent;
-            _orderProcessor.UpdateOrder(actual.Id, actual.Address, actual.State);
-
             // Assert
+            Assert.Throws<ArgumentException>("Address", () => _orderProcessor.UpdateOrder(actual.Id, address, state));
             sql = $"UPDATE Shipment SET Address='{actual.Address}', State='{actual.State}' WHERE Id='{actual.Id}'";
-            _dbDataAccessMock.Verify(x => x.UpdateData<OrderModel>(sql, actual), Times.Once);
+            _dbDataAccessMock.Verify(x => x.UpdateData<OrderModel>(sql, actual), Times.Never);
         }
 
         [Fact]

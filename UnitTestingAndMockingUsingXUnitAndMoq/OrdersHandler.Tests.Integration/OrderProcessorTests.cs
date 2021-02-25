@@ -1,6 +1,7 @@
 using OrdersHandler.DataAccess;
 using OrdersHandler.Models;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using Xunit;
 
@@ -12,6 +13,11 @@ namespace OrdersHandler.Tests.Integration
         private IDbDataAccess _sqliteDataAccess;
         private OrderProcessor _orderProcessor;
 
+
+        /// <summary>
+        /// Integration tests are executed against the test database  <param name="_connStringSettings"></param> which by default contains few sample orders
+        /// </summary> 
+        
         public OrderProcessorTests()
         {
             _connStringSettings = new ConnectionStringSettings("SQLite", @"Data Source=.\OrdersHandlerDb.db;Version=3;", "OrdersHandler.Tests.Integration");
@@ -28,7 +34,7 @@ namespace OrdersHandler.Tests.Integration
             // Arrange 
             int nbrOfOrdersAtStart = _orderProcessor.GetAllOrders().Count;
 
-            // Acct
+            // Act
             _orderProcessor.CreateNewOrder(user, address);
 
             // Assert
@@ -62,7 +68,7 @@ namespace OrdersHandler.Tests.Integration
         [Theory]
         [InlineData("Wien", OrderState.Sent)]
         [InlineData("Graz", OrderState.Delivered)]
-        public void UpdateOrder_ShouldUpdate_ValidData(string address, OrderState state)
+        public void UpdateOrder_ShouldUpdate_ForValidData(string address, OrderState state)
         {
             // Arrange 
             var orders = _orderProcessor.GetAllOrders();
@@ -77,10 +83,23 @@ namespace OrdersHandler.Tests.Integration
             Assert.Equal(address, updatedOrder.Address);
             Assert.Equal(state, updatedOrder.State);
         }
-        
+
+        [Theory]
+        [InlineData("", OrderState.Sent)]        
+        public void UpdateOrder_ShouldFail_ForInvalidData(string address, OrderState state)
+        {
+            // Arrange 
+            var orders = _orderProcessor.GetAllOrders();            
+            Random r = new Random();
+            int ranIdx = r.Next(0, orders.Count);
+
+            // Act            
+            Assert.Throws<ArgumentException>("Address", () => _orderProcessor.UpdateOrder(ranIdx, address, state));  
+        }
+
 
         [Fact]
-        public void IsOrderDelivered_ShouldReturnTrueForDeliveredOrders()
+        public void IsOrderDelivered_ShouldReturnTrueForDeliveredOrder()
         {
             // Arrange 
             var orders = _orderProcessor.GetAllOrders();
@@ -93,6 +112,22 @@ namespace OrdersHandler.Tests.Integration
             // Assert
             var output = _orderProcessor.IsOrderDelivered(ranIdx);
             Assert.True(output);
+        }
+
+        [Fact]
+        public void IsOrderDelivered_ShouldReturnFalseForNotDeliveredOrder()
+        {
+            // Arrange 
+            var orders = _orderProcessor.GetAllOrders();
+            var notDeliveredOrder = orders.Find(x => x.State != OrderState.Delivered);
+            Assert.NotNull(notDeliveredOrder);
+
+            // Act            
+            _orderProcessor.IsOrderDelivered(notDeliveredOrder.Id);
+
+            // Assert
+            var output = _orderProcessor.IsOrderDelivered(notDeliveredOrder.Id);
+            Assert.False(output);
         }
     }
 }
