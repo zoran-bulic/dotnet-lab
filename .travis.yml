@@ -1,10 +1,7 @@
 language: csharp
 mono: none
 os: windows
-solution: UnitTestingAndMockingUsingXUnitAndMoq.sln
-
-install:
-- dotnet restore
+solution: UnitTestingAndMockingUsingXUnitAndMoq/UnitTestingAndMockingUsingXUnitAndMoq.sln
 
 script:
  - dotnet build
