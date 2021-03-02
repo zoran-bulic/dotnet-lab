@@ -1,2 +1,2 @@
 language: csharp
-solution: UnitTestingAndMockingUsingXUnitAndMoq.sln
+solution: UnitTestingAndMockingUsingXUnitAndMoq/UnitTestingAndMockingUsingXUnitAndMoq.sln
