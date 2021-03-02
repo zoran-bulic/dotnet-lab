@@ -1,6 +1,7 @@
 language: csharp
 mono: none
 dist: xenial
+dotnet: 4.7.2
 
 install:
 - dotnet restore
