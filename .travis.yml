@@ -2,6 +2,3 @@ language: csharp
 mono: none
 os: windows
 solution: UnitTestingAndMockingUsingXUnitAndMoq/UnitTestingAndMockingUsingXUnitAndMoq.sln
-
-script:
- - dotnet build
