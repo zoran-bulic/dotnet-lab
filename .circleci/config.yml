@@ -7,15 +7,53 @@ jobs:
   build:
     executor:
       name: win/default    
+    working_directory: C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq
     steps:
       - checkout:
           path: C:\Users\circleci\project
       - run:
           name: "Navigate to the UnitTestingAndMockingUsingXUnitAndMoq solution dir"
           command: cd UnitTestingAndMockingUsingXUnitAndMoq
+      - restore_cache:
+          keys:
+            - dotnet-packages-v1-{{ checksum "OrdersHandler/OrdersHandler.csproj" }}            
       - run:
           name: "Install project dependencies"
-          command: dotnet restore
+          command: dotnet.exe restore
+      - save_cache:
+          paths:
+            - C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq\.nuget\packages
+          key: dotnet-packages-v1-{{ checksum "OrdersHandler/OrdersHandler.csproj" }}          
+      - restore_cache:
+          keys:            
+            - dotnet-packages-v1-{{ checksum "OrdersHandler.Tests.Integration/OrdersHandler.Tests.Integration.csproj" }}
+      - run:
+          name: "Install project dependencies"
+          command: dotnet.exe restore
+      - save_cache:
+          paths:
+            - C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq\.nuget\packages
+          key: dotnet-packages-v1-{{ checksum "OrdersHandler.Tests.Integration/OrdersHandler.Tests.Integration.csproj" }}
+      - restore_cache:
+          keys:            
+            - dotnet-packages-v1-{{ checksum "OrdersHandler.Tests.Unit/OrdersHandler.Tests.Unit.csproj" }}
+      - run:
+          name: "Install project dependencies"
+          command: dotnet.exe restore
+      - save_cache:
+          paths:
+            - C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq\.nuget\packages
+          key: dotnet-packages-v1-{{ checksum "OrdersHandler.Tests.Unit/OrdersHandler.Tests.Unit.csproj" }}          
+      - restore_cache:
+          keys:            
+            - dotnet-packages-v1-{{ checksum "OrdersHandler.UI/OrdersHandler.UI.csproj" }}
+      - run:
+          name: "Install project dependencies"
+          command: dotnet.exe restore
+      - save_cache:
+          paths:
+            - C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq\.nuget\packages
+          key: dotnet-packages-v1-{{ checksum "OrdersHandler.UI/OrdersHandler.UI.csproj" }}
       - run:
           name: "Run Build step"
-          command: msbuild
+          command: msbuild  -p:Configuration=Release
