@@ -4,13 +4,23 @@ orbs:
  win: circleci/windows@2.2.0
 
  workflows:
-  build-application:
+  version: 2
+  build-application-and-run-tests:
+    triggers:
+      - schedule:
+        cron: "0 0 * * *"
+        filters:
+          branches:
+            only:
+              - master
     jobs:
-      - build
-  run-tests:
-    jobs:
-      - unit-tests
-      - integration-tests
+      - build    
+      - unit-tests:
+        requires: 
+          - build
+      - integration-tests:
+        requires:
+          - build
 
 jobs:
   build:
