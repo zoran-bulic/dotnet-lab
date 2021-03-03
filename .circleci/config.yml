@@ -15,7 +15,7 @@ jobs:
           keys:
             - dotnet-packages-v1-{{ checksum "OrdersHandler/OrdersHandler.csproj" }}            
       - run:
-          name: "Install project dependencies"
+          name: "Install project dependencies for OrdersHandler.csproj"
           command: dotnet.exe restore
       - save_cache:
           paths:
@@ -25,7 +25,7 @@ jobs:
           keys:            
             - dotnet-packages-v1-{{ checksum "OrdersHandler.Tests.Integration/OrdersHandler.Tests.Integration.csproj" }}
       - run:
-          name: "Install project dependencies"
+          name: "Install project dependencies for OrdersHandler.Tests.Integration.csproj"
           command: dotnet.exe restore
       - save_cache:
           paths:
@@ -35,7 +35,7 @@ jobs:
           keys:            
             - dotnet-packages-v1-{{ checksum "OrdersHandler.Tests.Unit/OrdersHandler.Tests.Unit.csproj" }}
       - run:
-          name: "Install project dependencies"
+          name: "Install project dependencies for OrdersHandler.Tests.Unit.csproj"
           command: dotnet.exe restore
       - save_cache:
           paths:
@@ -45,12 +45,12 @@ jobs:
           keys:            
             - dotnet-packages-v1-{{ checksum "OrdersHandler.UI/OrdersHandler.UI.csproj" }}
       - run:
-          name: "Install project dependencies"
+          name: "Install project dependencies for OrdersHandler.UI.csproj"
           command: dotnet.exe restore
       - save_cache:
           paths:
             - C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq\.nuget\packages
           key: dotnet-packages-v1-{{ checksum "OrdersHandler.UI/OrdersHandler.UI.csproj" }}
       - run:
-          name: "Run Build step"
+          name: "Run Build step for the solution UnitTestingAndMockingUsingXUnitAndMoq.sln"
           command: msbuild  -p:Configuration=Release
