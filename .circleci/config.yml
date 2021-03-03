@@ -3,29 +3,16 @@ version: 2.1
 orbs:
  win: circleci/windows@2.2.0
 
-workflows:
-  hello-world:
-    jobs:
-      - build
-
 jobs:
   build:
     executor:
-      name: win/default
-    working_directory: C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq
+      name: win/default    
     steps:
       - checkout:
-          path: C:\Users\circleci\project
-      - restore_cache:
-          keys:
-            - dotnet-packages-v1-{{ checksum "UnitTestingAndMockingUsingXUnitAndMoq.sln" }}
+          path: C:\Users\circleci\project      
       - run:
           name: "Install project dependencies"
-          command: dotnet.exe restore
-      - save_cache:
-          paths:
-            - C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq\.nuget\packages
-          key: dotnet-packages-v1-{{ checksum "UnitTestingAndMockingUsingXUnitAndMoq.sln" }}
+          command: dotnet.exe restore      
       - run:
           name: "Run Build step"
-          command: dotnet.exe build -c Release -r win10-x64
+          command: cd UnitTestingAndMockingUsingXUnitAndMoq | msbuild
