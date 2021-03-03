@@ -7,10 +7,10 @@ jobs:
  build:
   executor: win/default     
 
-  steps:	
-    - checkout
-    - run
-		name: Navigate inside folder and build the solution
-		command: 
-		cd UnitTestingAndMockingUsingXUnitAndMoq
-		dotnet build
+ steps:	
+  - checkout
+  - run
+   name: Navigate in solution folder and build the solution
+   command:
+    cd UnitTestingAndMockingUsingXUnitAndMoq
+	dotnet build
