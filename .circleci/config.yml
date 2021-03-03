@@ -54,3 +54,6 @@ jobs:
       - run:
           name: "Run Build step for the solution UnitTestingAndMockingUsingXUnitAndMoq.sln"
           command: msbuild  -p:Configuration=Release
+      - run:
+          name: "Test the executable OrdersHandler.UI.exe"
+          command: .\OrdersHandler.UI\bin\Release\OrdersHandler.UI.exe
