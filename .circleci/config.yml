@@ -11,9 +11,6 @@ jobs:
     steps:
       - checkout:
           path: C:\Users\circleci\project
-      - run:
-          name: "Navigate to the UnitTestingAndMockingUsingXUnitAndMoq solution dir"
-          command: cd UnitTestingAndMockingUsingXUnitAndMoq
       - restore_cache:
           keys:
             - dotnet-packages-v1-{{ checksum "OrdersHandler/OrdersHandler.csproj" }}            
