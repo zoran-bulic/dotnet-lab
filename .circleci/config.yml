@@ -9,10 +9,13 @@ jobs:
       name: win/default    
     steps:
       - checkout:
-          path: C:\Users\circleci\project      
+          path: C:\Users\circleci\project
+      - run:
+          name: "Navigate to the UnitTestingAndMockingUsingXUnitAndMoq solution dir"
+          command: cd UnitTestingAndMockingUsingXUnitAndMoq
       - run:
           name: "Install project dependencies"
-          command: dotnet.exe restore      
+          command: dotnet restore
       - run:
           name: "Run Build step"
-          command: cd UnitTestingAndMockingUsingXUnitAndMoq | msbuild
+          command: msbuild
