@@ -1,6 +1,6 @@
 # Unit Testing and Mocking using xUnit and Moq
 
-[![Build Status](https://dev.azure.com/zoranbulic/dotnet-lab/_apis/build/status/dotnet-lab.git?branchName=main)](https://dev.azure.com/zoranbulic/dotnet-lab/_build/latest?definitionId=4&branchName=main)
+[![Build Status](https://dev.azure.com/zoranbulic/dotnet-lab/_apis/build/status/zoran-bulic.dotnet-lab?branchName=main)](https://dev.azure.com/zoranbulic/dotnet-lab/_build/latest?definitionId=5&branchName=main)
 [![CircleCI](https://circleci.com/gh/zoran-bulic/dotnet-lab.svg?style=shield)](https://circleci.com/gh/zoran-bulic/dotnet-lab?branch=main)
 
 ## About
