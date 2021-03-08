@@ -1,7 +1,6 @@
 using OrdersHandler.DataAccess;
 using OrdersHandler.Models;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using Xunit;
 

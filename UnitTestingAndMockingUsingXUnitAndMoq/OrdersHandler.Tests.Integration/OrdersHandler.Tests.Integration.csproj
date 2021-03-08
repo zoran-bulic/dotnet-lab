@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OrdersHandler.UI\OrdersHandler.UI.csproj" />
     <ProjectReference Include="..\OrdersHandler\OrdersHandler.csproj" />
   </ItemGroup>
 

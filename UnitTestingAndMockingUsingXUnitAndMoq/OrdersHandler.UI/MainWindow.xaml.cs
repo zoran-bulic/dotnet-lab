@@ -1,4 +1,4 @@
-﻿using OrdersHandler.UI.ViewModel;
+﻿using OrdersHandler.UI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

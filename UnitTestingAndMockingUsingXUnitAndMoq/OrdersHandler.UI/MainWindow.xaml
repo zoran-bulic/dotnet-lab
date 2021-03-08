@@ -4,10 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OrdersHandler.UI"
-        xmlns:viewmodel="clr-namespace:OrdersHandler.UI.ViewModel"        
+        xmlns:viewmodel="clr-namespace:OrdersHandler.UI.ViewModels"
         mc:Ignorable="d"
         Title="Orders Handling" Height="450" Width="800">
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
@@ -30,7 +29,7 @@
             <Button Command="{Binding GetOrderCommand}" Content="Get Order" Width="200" Height="23" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <Label  Content="User: " Width="100" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <TextBox Text="{Binding Path=User,Mode=TwoWay}" HorizontalAlignment="Left" Width="100"/>
-        </StackPanel>        
+        </StackPanel>
         <StackPanel Grid.Row="2" Orientation="Horizontal">
             <Button Command="{Binding GetUndeliveredOrdersForUserCommand}" Content="Get Undelivered Orders For User" Width="200" Height="23"  HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <Label  Content="Address: " Width="100" HorizontalAlignment="Left" VerticalAlignment="Top"/>

@@ -1,6 +1,5 @@
 using System;
 using Xunit;
-using OrdersHandler;
 using Moq;
 using OrdersHandler.Models;
 using OrdersHandler.DataAccess;
