@@ -19,7 +19,7 @@ namespace OrdersHandler.Tests.Integration
         
         public OrderProcessorTests()
         {
-            _connStringSettings = new ConnectionStringSettings("SQLite", @"Data Source=.\OrdersHandlerDb.db;Version=3;", "OrdersHandler.Tests.Integration");
+            _connStringSettings = new ConnectionStringSettings("SQLite", @"Data Source=.\OrdersHandlerTestDB.db;Version=3;", "OrdersHandler.Tests.Integration");
             _sqliteDataAccess = new SqliteDataAccess(_connStringSettings);
             _orderProcessor = new OrderProcessor(_sqliteDataAccess);
         }
@@ -66,7 +66,6 @@ namespace OrdersHandler.Tests.Integration
 
         [Theory]
         [InlineData("Wien", OrderState.Sent)]
-        [InlineData("Graz", OrderState.Delivered)]
         public void UpdateOrder_ShouldUpdate_ForValidData(string address, OrderState state)
         {
             // Arrange 

@@ -25,4 +25,10 @@
     <ProjectReference Include="..\OrdersHandler\OrdersHandler.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="OrdersHandlerTestDB.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
