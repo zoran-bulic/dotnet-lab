@@ -18,18 +18,13 @@ namespace OrdersHandler.Tests.Unit
         }
 
         [Fact]
-        public void GetAllOrders_ShouldReturnValidData_UsingMock()
-        {
-            // Arrange
+        public void GetAllOrders_ShouldReturnValidData()
+        {            
             string sql = "select * from Shipment";
             List<OrderModel> expected = GetSampleOrders();
             _dbDataAccessMock.Setup(x => x.LoadData<OrderModel>(sql))
                 .Returns(expected);
-            
-            // Act
-            var actual = _orderProcessor.GetAllOrders();
-
-            // Assert
+            var actual = _orderProcessor.GetAllOrders();            
             Assert.Equal(expected.Count, actual.Count);
             for (int i = 0; i < expected.Count; i++)
             {
@@ -39,73 +34,50 @@ namespace OrdersHandler.Tests.Unit
 
         [Fact]
         public void GetOrder_ReturnsValidData_ForValidOrderId()
-        {
-
-            // Arrange
+        {            
             OrderModel expected = GetSampleOrder();            
             string sql = $"select * from Shipment where Id={expected.Id}";                        
             _dbDataAccessMock.Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
                 .Returns(expected);
-
-            // Act
-            var actual = _orderProcessor.GetOrder(expected.Id);
-
-            // Assert
+            var actual = _orderProcessor.GetOrder(expected.Id);            
             Assert.Equal(expected, actual);
         }
 
         [Fact]
         public void IsOrderDelivered_ShouldReturnsTrue_ForDeliveredOrders()
         {
-            // Arrange
             OrderModel expected = GetDeliveredSampleOrder();            
-            string sql = $"select * from Shipment where Id={expected.Id}";           
-
+            string sql = $"select * from Shipment where Id={expected.Id}";
             _dbDataAccessMock
                 .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
                 .Returns(expected);
-
-            // Act
-            var actual = _orderProcessor.IsOrderDelivered(expected.Id);
-
-            // Assert
+            var actual = _orderProcessor.IsOrderDelivered(expected.Id);            
             Assert.True(actual);
         }
 
         [Fact]
         public void IsOrderDelivered_ShouldReturnsFalse_ForNotDeliveredOrders()
         {
-            // Arrange
             OrderModel expected = GetNotDeliveredSampleOrder();
             string sql = $"select * from Shipment where Id={expected.Id}";
-
             _dbDataAccessMock
                 .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
-                .Returns(expected);
-
-            // Act
-            var actual = _orderProcessor.IsOrderDelivered(expected.Id);
-
-            // Assert
+                .Returns(expected);            
+            var actual = _orderProcessor.IsOrderDelivered(expected.Id);            
             Assert.False(actual);
         }
 
         [Theory]
         [InlineData("Wien", OrderState.Sent)]
         public void UpdateOrder_UpdateDataMethodShouldBeCalledOnlyOnce_ForValidData(string address, OrderState state)
-        {
-            // Arrange
+        {            
             OrderModel expected = GetSampleOrder();
             string sql = $"select * from Shipment where Id={expected.Id}";
             _dbDataAccessMock
                 .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
-                .Returns(expected);
-
-            // Act
+                .Returns(expected);         
             var actual = _orderProcessor.GetOrder(expected.Id);
-            _orderProcessor.UpdateOrder(actual.Id, address, state);
-
-            // Assert
+            _orderProcessor.UpdateOrder(actual.Id, address, state);            
             sql = $"UPDATE Shipment SET Address='{actual.Address}', State='{actual.State}' WHERE Id='{actual.Id}'";
             _dbDataAccessMock.Verify(x => x.UpdateData<OrderModel>(sql, actual), Times.Once);
         }
@@ -114,18 +86,13 @@ namespace OrdersHandler.Tests.Unit
         [InlineData("", OrderState.Sent)]
         [InlineData(" ", OrderState.Delivered)]        
         public void UpdateOrder_UpdateFails_ForInvalidAddress(string address, OrderState state)
-        {
-            // Arrange
+        {           
             OrderModel expected = GetSampleOrder();
             string sql = $"select * from Shipment where Id={expected.Id}";
             _dbDataAccessMock
                 .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
-                .Returns(expected);
-
-            // Act
-            var actual = _orderProcessor.GetOrder(expected.Id);
-
-            // Assert
+                .Returns(expected);            
+            var actual = _orderProcessor.GetOrder(expected.Id);            
             Assert.Throws<ArgumentException>("Address", () => _orderProcessor.UpdateOrder(actual.Id, address, state));
             sql = $"UPDATE Shipment SET Address='{actual.Address}', State='{actual.State}' WHERE Id='{actual.Id}'";
             _dbDataAccessMock.Verify(x => x.UpdateData<OrderModel>(sql, actual), Times.Never);
@@ -134,19 +101,14 @@ namespace OrdersHandler.Tests.Unit
         [Fact]
         public void DeliverOrder_UpdateDataMethodShouldBeCalledOnlyOnce()
         {
-            // Arrange
             OrderModel expected = GetSampleOrder();
             string sql = $"select * from Shipment where Id={expected.Id}";
             _dbDataAccessMock
                 .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
-                .Returns(expected);
-
-            // Act
+                .Returns(expected);            
             var actual = _orderProcessor.GetOrder(expected.Id);
             DateTime deliveryDate = DateTime.Now;
             _orderProcessor.DeliverOrder(actual.Id, deliveryDate);
-
-            // Assert
             string deliveryDateFormated = deliveryDate.ToString("yyyy-MM-dd HH:MM:ss");
             sql = $"UPDATE Shipment SET DeliveryDate='{deliveryDateFormated}', State='{OrderState.Delivered}' WHERE Id='{actual.Id}'";
             _dbDataAccessMock.Verify(x => x.UpdateData<OrderModel>(sql, actual), Times.Once);
@@ -154,24 +116,18 @@ namespace OrdersHandler.Tests.Unit
 
         [Fact]
         public void DeliverOrder_ShouldThrowException_ForInvalidDeliveryDate()
-        {
-            // Arrange
+        {            
             OrderModel expected = GetSampleOrder();
             string sql = $"select * from Shipment where Id={expected.Id}";
             _dbDataAccessMock
                 .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
-                .Returns(expected);
-
-            // Act
+                .Returns(expected);            
             var actual = _orderProcessor.GetOrder(expected.Id);
             DateTime deliveryDate = actual.CreationDate.AddDays(-1);
-            Assert.Throws<ArgumentException>(() => _orderProcessor.DeliverOrder(actual.Id, deliveryDate));
-
-            // Assert
+            Assert.Throws<ArgumentException>(() => _orderProcessor.DeliverOrder(actual.Id, deliveryDate));            
             string deliveryDateFormated = deliveryDate.ToString("yyyy-MM-dd HH:MM:ss");
             sql = $"UPDATE Shipment SET DeliveryDate='{deliveryDateFormated}', State='{OrderState.Delivered}' WHERE Id='{actual.Id}'";
             _dbDataAccessMock.Verify(x => x.UpdateData<OrderModel>(sql, actual), Times.Never);
-
         }
 
         #region Helper Methods
