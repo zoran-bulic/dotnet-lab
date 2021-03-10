@@ -4,7 +4,8 @@
 		<DebugType>full</DebugType>		
 		<Product>UnitTestingAndMockingUsingXUnitAndMoq</Product>		
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<LangVersion>8.0</LangVersion>		
+		<LangVersion>8.0</LangVersion>
+		<TargetFramework>net5.0</TargetFramework>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<DebugSymbols>True</DebugSymbols>
