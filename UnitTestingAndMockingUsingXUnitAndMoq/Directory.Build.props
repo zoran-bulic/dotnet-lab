@@ -1,17 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project>
+﻿<Project>
 	<PropertyGroup>
 		<Authors>zoranbulic</Authors>
-		<DebugType>full</DebugType>
-		<Company>zoranbulic</Company>
-		<Product>UnitTestingAndMockingUsingXUnitAndMoq</Product>
-		<Copyright>Copyright © zoranbulic 2021</Copyright>
-		<LangVersion>8.0</LangVersion>
+		<DebugType>full</DebugType>		
+		<Product>UnitTestingAndMockingUsingXUnitAndMoq</Product>		
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<LangVersion>8.0</LangVersion>		
 	</PropertyGroup>
-
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<DebugSymbols>True</DebugSymbols>
 	</PropertyGroup>
-
 </Project>
