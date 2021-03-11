@@ -26,10 +26,10 @@ namespace OrdersHandler.Tests.Integration
         [InlineData("TestUser1", "Wien")]
         [InlineData("TestUser2", "Graz")]
         [InlineData("TestUser2", "Leibnitz")]
-        public void CreateNewOrder_ShouldCreateNewOrder(string user, string address)
+        public async void CreateNewOrder_ShouldCreateNewOrder(string user, string address)
         {
             int nbrOfOrdersAtStart = _orderProcessor.GetAllOrders().Count;            
-            _orderProcessor.CreateNewOrder(user, address);            
+            await _orderProcessor.CreateNewOrder(user, address);            
             int nbrOfOrdersAtEnd = _orderProcessor.GetAllOrders().Count;
             Assert.True(nbrOfOrdersAtEnd > nbrOfOrdersAtStart);
         }
@@ -64,7 +64,7 @@ namespace OrdersHandler.Tests.Integration
             var orders = _orderProcessor.GetAllOrders();
             Random r = new Random();
             int ranIdx = r.Next(0, orders.Count);                        
-            _orderProcessor.UpdateOrder(ranIdx, address, state);            
+            _orderProcessor.UpdateAddressAndStateOfOrder(ranIdx, address, state);            
             var updatedOrder = _orderProcessor.GetOrder(ranIdx);
             Assert.Equal(address, updatedOrder.Address);
             Assert.Equal(state, updatedOrder.State);
@@ -77,7 +77,7 @@ namespace OrdersHandler.Tests.Integration
             var orders = _orderProcessor.GetAllOrders();            
             Random r = new Random();
             int ranIdx = r.Next(0, orders.Count);                        
-            Assert.Throws<ArgumentException>("Address", () => _orderProcessor.UpdateOrder(ranIdx, address, state));  
+            Assert.Throws<ArgumentException>("Address", () => _orderProcessor.UpdateAddressAndStateOfOrder(ranIdx, address, state));  
         }
 
 
@@ -87,7 +87,7 @@ namespace OrdersHandler.Tests.Integration
             var orders = _orderProcessor.GetAllOrders();
             Random r = new Random();
             int ranIdx = r.Next(0, orders.Count);                        
-            _orderProcessor.UpdateOrder(ranIdx, "Wien", OrderState.Delivered);            
+            _orderProcessor.UpdateAddressAndStateOfOrder(ranIdx, "Wien", OrderState.Delivered);            
             var output = _orderProcessor.IsOrderDelivered(ranIdx);
             Assert.True(output);
         }

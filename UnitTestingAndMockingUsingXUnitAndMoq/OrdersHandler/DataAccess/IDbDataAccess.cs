@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OrdersHandler.DataAccess
 {
@@ -8,5 +9,7 @@ namespace OrdersHandler.DataAccess
         T LoadData<T>(string sql, int orderId);
         void SaveData<T>(string sql, T order);
         void UpdateData<T>(string sql, T order);
+        Task UpdateDataAsync<T>(string sql, T order);
+        Task<int> InsertDataAsync<T>(string sql, T order);
     }
 }

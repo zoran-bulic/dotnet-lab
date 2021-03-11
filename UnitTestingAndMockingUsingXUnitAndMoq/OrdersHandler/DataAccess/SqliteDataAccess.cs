@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OrdersHandler.DataAccess
 {
@@ -23,7 +24,6 @@ namespace OrdersHandler.DataAccess
                 _connString = LoadConnectionString("SQLite");
             }
         }
-
 
         public List<T> LoadData<T>(string sql)
         {
@@ -61,6 +61,24 @@ namespace OrdersHandler.DataAccess
             {
                 conn.ExecuteScalar(sql, order);
             }
+        }
+
+        public async Task<int> InsertDataAsync<T>(string sql, T order)
+        {
+            int createdOrderId;
+            using (IDbConnection conn = new SQLiteConnection(_connString))
+            {
+                createdOrderId = await conn.ExecuteScalarAsync<int>(sql, order);
+            }            
+            return createdOrderId;
+        }
+
+        public async Task UpdateDataAsync<T>(string sql, T order)
+        {            
+            using (IDbConnection conn = new SQLiteConnection(_connString))
+            {
+                await conn.ExecuteScalarAsync<int>(sql, order);                
+            }            
         }
 
         private string LoadConnectionString(string id = _sqliteConnectionStringId)

@@ -183,14 +183,16 @@ namespace OrdersHandler.UI.ViewModels
         public void UpdateOrder()
         {
             Message = "UpdateOrder(Address, State) called";
-            orderProcessor.UpdateOrder(OrderId, Address, State);
+            orderProcessor.UpdateAddressAndStateOfOrder(OrderId, Address, State);
 
         }
 
-        public void CreateNewOrder()
+        public async void CreateNewOrder()
         {
+            int createdOrderId;
             Message = "CreateNewOrder(User, Address) called";
-            orderProcessor.CreateNewOrder(User, Address);
+            createdOrderId = await orderProcessor.CreateNewOrder(User, Address);
+            OrderId = createdOrderId;
         }
     }
 }

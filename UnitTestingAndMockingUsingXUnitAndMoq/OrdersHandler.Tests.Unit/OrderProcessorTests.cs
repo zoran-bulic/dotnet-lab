@@ -77,7 +77,7 @@ namespace OrdersHandler.Tests.Unit
                 .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
                 .Returns(expected);         
             var actual = _orderProcessor.GetOrder(expected.Id);
-            _orderProcessor.UpdateOrder(actual.Id, address, state);            
+            _orderProcessor.UpdateAddressAndStateOfOrder(actual.Id, address, state);            
             sql = $"UPDATE Shipment SET Address='{actual.Address}', State='{actual.State}' WHERE Id='{actual.Id}'";
             _dbDataAccessMock.Verify(x => x.UpdateData<OrderModel>(sql, actual), Times.Once);
         }
@@ -93,7 +93,7 @@ namespace OrdersHandler.Tests.Unit
                 .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
                 .Returns(expected);            
             var actual = _orderProcessor.GetOrder(expected.Id);            
-            Assert.Throws<ArgumentException>("Address", () => _orderProcessor.UpdateOrder(actual.Id, address, state));
+            Assert.Throws<ArgumentException>("Address", () => _orderProcessor.UpdateAddressAndStateOfOrder(actual.Id, address, state));
             sql = $"UPDATE Shipment SET Address='{actual.Address}', State='{actual.State}' WHERE Id='{actual.Id}'";
             _dbDataAccessMock.Verify(x => x.UpdateData<OrderModel>(sql, actual), Times.Never);
         }

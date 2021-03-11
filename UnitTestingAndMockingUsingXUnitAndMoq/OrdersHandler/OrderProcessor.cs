@@ -2,6 +2,7 @@
 using OrdersHandler.Models;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OrdersHandler
 {
@@ -77,8 +78,8 @@ namespace OrdersHandler
             _database.UpdateData<OrderModel>(sqlUpdate, order);
         }
 
-        public void UpdateOrder(int orderId, string address, OrderState state)
-        {
+        public async void UpdateAddressAndStateOfOrder(int orderId, string address, OrderState state)
+        {           
             if (string.IsNullOrEmpty(address) || string.IsNullOrWhiteSpace(address))
             {
                 throw new ArgumentException("Address is null or empty", "Address");
@@ -89,12 +90,13 @@ namespace OrdersHandler
             order.Address = address;
             order.State = state;
 
-            sql = $"UPDATE Shipment SET Address='{address}', State='{state}' WHERE Id='{orderId}'";
-            _database.UpdateData<OrderModel>(sql, order);
+            sql = $"UPDATE Shipment SET Address='{address}', State='{state}' WHERE Id='{orderId}'";            
+            await _database.UpdateDataAsync<OrderModel>(sql, order);            
         }
 
-        public void CreateNewOrder(string user, string address)
+        public async Task<int> CreateNewOrder(string user, string address)
         {
+            int createdOrderId;
             OrderModel order = new OrderModel
             {
                 User = user,
@@ -102,8 +104,9 @@ namespace OrdersHandler
                 Address = address,
                 State = OrderState.Created
             };
-            string sql = $"INSERT INTO Shipment (User, CreationDate, Address, State) VALUES (@User, @CreationDate, @Address, @State);";
-            _database.SaveData<OrderModel>(sql, order);
+            string sql = $"INSERT INTO Shipment (User, CreationDate, Address, State) VALUES (@User, @CreationDate, @Address, @State); SELECT last_insert_rowid();";            
+            createdOrderId = await _database.InsertDataAsync<OrderModel>(sql, order);
+            return createdOrderId;
         }
 
     }
