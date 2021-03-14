@@ -4,6 +4,7 @@ using Moq;
 using OrdersHandler.Models;
 using OrdersHandler.DataAccess;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OrdersHandler.Tests.Unit
 {
@@ -18,13 +19,13 @@ namespace OrdersHandler.Tests.Unit
         }
 
         [Fact]
-        public void GetAllOrders_ShouldReturnValidData()
+        public async void GetAllOrders_ShouldReturnValidData()
         {            
             string sql = "select * from Shipment";
             List<OrderModel> expected = GetSampleOrders();
             _dbDataAccessMock.Setup(x => x.LoadData<OrderModel>(sql))
                 .Returns(expected);
-            var actual = _orderProcessor.GetAllOrders();            
+            var actual = await _orderProcessor.GetAllOrders();            
             Assert.Equal(expected.Count, actual.Count);
             for (int i = 0; i < expected.Count; i++)
             {
@@ -33,13 +34,13 @@ namespace OrdersHandler.Tests.Unit
         }
 
         [Fact]
-        public void GetOrder_ReturnsValidData_ForValidOrderId()
+        public async void GetOrder_ReturnsValidData_ForValidOrderId()
         {            
             OrderModel expected = GetSampleOrder();            
             string sql = $"select * from Shipment where Id={expected.Id}";                        
             _dbDataAccessMock.Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
                 .Returns(expected);
-            var actual = _orderProcessor.GetOrder(expected.Id);            
+            var actual = await _orderProcessor.GetOrder(expected.Id);            
             Assert.Equal(expected, actual);
         }
 
@@ -69,14 +70,14 @@ namespace OrdersHandler.Tests.Unit
 
         [Theory]
         [InlineData("Wien", OrderState.Sent)]
-        public void UpdateOrder_UpdateDataMethodShouldBeCalledOnlyOnce_ForValidData(string address, OrderState state)
+        public async void UpdateOrder_UpdateDataMethodShouldBeCalledOnlyOnce_ForValidData(string address, OrderState state)
         {            
             OrderModel expected = GetSampleOrder();
             string sql = $"select * from Shipment where Id={expected.Id}";
             _dbDataAccessMock
                 .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
                 .Returns(expected);         
-            var actual = _orderProcessor.GetOrder(expected.Id);
+            var actual = await _orderProcessor.GetOrder(expected.Id);
             _orderProcessor.UpdateAddressAndStateOfOrder(actual.Id, address, state);            
             sql = $"UPDATE Shipment SET Address='{actual.Address}', State='{actual.State}' WHERE Id='{actual.Id}'";
             _dbDataAccessMock.Verify(x => x.UpdateData<OrderModel>(sql, actual), Times.Once);
@@ -85,28 +86,28 @@ namespace OrdersHandler.Tests.Unit
         [Theory]
         [InlineData("", OrderState.Sent)]
         [InlineData(" ", OrderState.Delivered)]        
-        public void UpdateOrder_UpdateFails_ForInvalidAddress(string address, OrderState state)
+        public async void UpdateOrder_UpdateFails_ForInvalidAddress(string address, OrderState state)
         {           
             OrderModel expected = GetSampleOrder();
             string sql = $"select * from Shipment where Id={expected.Id}";
             _dbDataAccessMock
                 .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
                 .Returns(expected);            
-            var actual = _orderProcessor.GetOrder(expected.Id);            
+            var actual = await _orderProcessor.GetOrder(expected.Id);            
             Assert.Throws<ArgumentException>("Address", () => _orderProcessor.UpdateAddressAndStateOfOrder(actual.Id, address, state));
             sql = $"UPDATE Shipment SET Address='{actual.Address}', State='{actual.State}' WHERE Id='{actual.Id}'";
             _dbDataAccessMock.Verify(x => x.UpdateData<OrderModel>(sql, actual), Times.Never);
         }
 
         [Fact]
-        public void DeliverOrder_UpdateDataMethodShouldBeCalledOnlyOnce()
+        public async void DeliverOrder_UpdateDataMethodShouldBeCalledOnlyOnce()
         {
             OrderModel expected = GetSampleOrder();
             string sql = $"select * from Shipment where Id={expected.Id}";
             _dbDataAccessMock
                 .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
                 .Returns(expected);            
-            var actual = _orderProcessor.GetOrder(expected.Id);
+            var actual = await _orderProcessor.GetOrder(expected.Id);
             DateTime deliveryDate = DateTime.Now;
             _orderProcessor.DeliverOrder(actual.Id, deliveryDate);
             string deliveryDateFormated = deliveryDate.ToString("yyyy-MM-dd HH:MM:ss");
@@ -115,14 +116,14 @@ namespace OrdersHandler.Tests.Unit
         }
 
         [Fact]
-        public void DeliverOrder_ShouldThrowException_ForInvalidDeliveryDate()
+        public async void DeliverOrder_ShouldThrowException_ForInvalidDeliveryDate()
         {            
             OrderModel expected = GetSampleOrder();
             string sql = $"select * from Shipment where Id={expected.Id}";
             _dbDataAccessMock
                 .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
                 .Returns(expected);            
-            var actual = _orderProcessor.GetOrder(expected.Id);
+            var actual = await _orderProcessor.GetOrder(expected.Id);
             DateTime deliveryDate = actual.CreationDate.AddDays(-1);
             Assert.Throws<ArgumentException>(() => _orderProcessor.DeliverOrder(actual.Id, deliveryDate));            
             string deliveryDateFormated = deliveryDate.ToString("yyyy-MM-dd HH:MM:ss");

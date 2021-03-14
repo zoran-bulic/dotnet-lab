@@ -1,6 +1,7 @@
 using OrdersHandler.DataAccess;
 using OrdersHandler.Models;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using Xunit;
 
@@ -28,16 +29,18 @@ namespace OrdersHandler.Tests.Integration
         [InlineData("TestUser2", "Leibnitz")]
         public async void CreateNewOrder_ShouldCreateNewOrder(string user, string address)
         {
-            int nbrOfOrdersAtStart = _orderProcessor.GetAllOrders().Count;            
+            var ordersAtStart = await _orderProcessor.GetAllOrders();
+            int nbrOfOrdersAtStart = ordersAtStart.Count;
             await _orderProcessor.CreateNewOrder(user, address);            
-            int nbrOfOrdersAtEnd = _orderProcessor.GetAllOrders().Count;
+            var ordersAtEnd = await _orderProcessor.GetAllOrders();
+            int nbrOfOrdersAtEnd = ordersAtEnd.Count;
             Assert.True(nbrOfOrdersAtEnd > nbrOfOrdersAtStart);
         }
 
         [Fact]
-        public void GetOrder_ShouldReturnOrder_ForValidId()
+        public async void GetOrder_ShouldReturnValidOrder_ForValidId()
         {            
-            var orders = _orderProcessor.GetAllOrders();            
+            var orders = await _orderProcessor.GetAllOrders();            
             foreach (var item in orders)
             {
                 Assert.NotNull(_orderProcessor.GetOrder(item.Id));
@@ -52,16 +55,17 @@ namespace OrdersHandler.Tests.Integration
         [Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public void GetOrder_ShouldReturnNull_ForInvalidId(int id)
+        public async void GetOrder_ShouldReturnNull_ForInvalidId(int id)
         {
-            Assert.Null(_orderProcessor.GetOrder(id));       
+            var order = await _orderProcessor.GetOrder(id);
+            Assert.Null(order);       
         }
 
         [Theory]
         [InlineData("Wien", OrderState.Sent)]
         public async void UpdateOrder_ShouldUpdate_ForValidData(string address, OrderState state)
         {
-            var orders = _orderProcessor.GetAllOrders();
+            var orders = await _orderProcessor.GetAllOrders();
             Random r = new Random();
             int ranIdx = r.Next(0, orders.Count);                        
             _orderProcessor.UpdateAddressAndStateOfOrder(ranIdx, address, state);            
@@ -72,19 +76,20 @@ namespace OrdersHandler.Tests.Integration
 
         [Theory]
         [InlineData("", OrderState.Sent)]        
-        public void UpdateOrder_ShouldFail_ForInvalidData(string address, OrderState state)
+        public async void UpdateOrder_ShouldFail_ForInvalidData(string address, OrderState state)
         {
-            var orders = _orderProcessor.GetAllOrders();            
+            var orders = await _orderProcessor.GetAllOrders();            
             Random r = new Random();
-            int ranIdx = r.Next(0, orders.Count);                        
+            int ranIdx = r.Next(0, orders.Count);
+            //_orderProcessor.UpdateAddressAndStateOfOrder(ranIdx, address, state);
             Assert.Throws<ArgumentException>("Address", () => _orderProcessor.UpdateAddressAndStateOfOrder(ranIdx, address, state));  
         }
 
 
         [Fact]
-        public void IsOrderDelivered_ShouldReturnTrueForDeliveredOrder()
+        public async void IsOrderDelivered_ShouldReturnTrueForDeliveredOrder()
         {            
-            var orders = _orderProcessor.GetAllOrders();
+            var orders = await _orderProcessor.GetAllOrders();
             Random r = new Random();
             int ranIdx = r.Next(0, orders.Count);                        
             _orderProcessor.UpdateAddressAndStateOfOrder(ranIdx, "Wien", OrderState.Delivered);            
@@ -93,11 +98,14 @@ namespace OrdersHandler.Tests.Integration
         }
 
         [Fact]
-        public void IsOrderDelivered_ShouldReturnFalseForNotDeliveredOrder()
+        public async void IsOrderDelivered_ShouldReturnFalseForNotDeliveredOrder()
         {            
-            var orders = _orderProcessor.GetAllOrders();
-            var notDeliveredOrder = orders.Find(x => x.State != OrderState.Delivered);
+            var orders = await _orderProcessor.GetAllOrders();
+            
+            List<OrderModel> ordersList = new List<OrderModel>(orders);
+            var notDeliveredOrder = ordersList.Find(x => x.State != OrderState.Delivered);
             Assert.NotNull(notDeliveredOrder);                        
+            
             _orderProcessor.IsOrderDelivered(notDeliveredOrder.Id);            
             var output = _orderProcessor.IsOrderDelivered(notDeliveredOrder.Id);
             Assert.False(output);

@@ -141,7 +141,7 @@ namespace OrdersHandler.UI.ViewModels
         {
             Message = $"GetAllOrders() called";
             var orders = orderProcessor.GetAllOrders();
-            OrdersModel = new OrdersModel(orders);
+            OrdersModel = new OrdersModel(orders.Result);
         }
 
         public async void GetOrder(int orderId)
@@ -149,11 +149,18 @@ namespace OrdersHandler.UI.ViewModels
             Message = $"GetOrder() called, OrderId: '{orderId}'";
             var order = await orderProcessor.GetOrder(orderId);
             OrdersModel = new OrdersModel(order);
-            OrderId = order.Id;
-            User = order.User;
-            Address = order.Address;
-            State = order.State;
-            DeliveryDate = order.DeliveryDate;
+            if(order != null)
+            {
+                OrderId = order.Id;
+                User = order.User;
+                Address = order.Address;
+                State = order.State;
+                DeliveryDate = order.DeliveryDate;
+            }
+            else
+            {
+                Message = $"Order with Id={orderId} does not exist";
+            }
         }
 
         public void GetUndeliveredOrdersForUser()

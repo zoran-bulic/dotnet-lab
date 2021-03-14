@@ -5,8 +5,8 @@ namespace OrdersHandler.UI.Models
 {
     public class OrdersModel
     {
-        public List<OrdersHandler.Models.OrderModel> Orders { get; }
-        public OrdersModel(List<OrdersHandler.Models.OrderModel> orders)
+        public IList<OrdersHandler.Models.OrderModel> Orders { get; }
+        public OrdersModel(IList<OrdersHandler.Models.OrderModel> orders)
         {
             Orders = orders;
         }

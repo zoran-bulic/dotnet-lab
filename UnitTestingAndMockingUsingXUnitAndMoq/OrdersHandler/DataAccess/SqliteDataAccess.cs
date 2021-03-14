@@ -63,6 +63,15 @@ namespace OrdersHandler.DataAccess
             }
         }
 
+        public async Task<IList<T>> LoadDataAsync<T>(string sql)
+        {
+            using (IDbConnection conn = new SQLiteConnection(_connString))
+            {
+                var output = await conn.QueryAsync<T>(sql, new DynamicParameters());
+                return output.ToList();
+            }
+        }
+
         public async Task<T> LoadDataAsync<T>(string sql, int orderId)
         {
             using (IDbConnection conn = new SQLiteConnection(_connString))
@@ -99,7 +108,6 @@ namespace OrdersHandler.DataAccess
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
         }
-
         #endregion // Helper methods        
     }
 }

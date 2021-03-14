@@ -10,6 +10,7 @@ namespace OrdersHandler.DataAccess
         void SaveData<T>(string sql, T order);
         void UpdateData<T>(string sql, T order);
 
+        Task<IList<T>> LoadDataAsync<T>(string sql);
         Task<T> LoadDataAsync<T>(string sql, int orderId);
         Task UpdateDataAsync<T>(string sql, T order);
         Task<int> InsertDataAsync<T>(string sql, T order);

@@ -22,10 +22,10 @@ namespace OrdersHandler
             _database = database;
         }
 
-        public List<OrderModel> GetAllOrders()
+        public async Task<IList<OrderModel>> GetAllOrders()
         {
             string sql = $"select * from Shipment";
-            var orders = _database.LoadData<OrderModel>(sql);
+            var orders = await _database.LoadDataAsync<OrderModel>(sql);
             return orders;
         }
         public async Task<OrderModel> GetOrder(int orderId)
@@ -108,6 +108,5 @@ namespace OrdersHandler
             createdOrderId = await _database.InsertDataAsync<OrderModel>(sql, order);
             return createdOrderId;
         }
-
     }
 }
