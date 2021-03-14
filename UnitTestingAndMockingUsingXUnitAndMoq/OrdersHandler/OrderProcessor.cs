@@ -28,10 +28,10 @@ namespace OrdersHandler
             var orders = _database.LoadData<OrderModel>(sql);
             return orders;
         }
-        public OrderModel GetOrder(int orderId)
+        public async Task<OrderModel> GetOrder(int orderId)
         {
             string sql = $"select * from Shipment where Id={orderId}";
-            var order = _database.LoadData<OrderModel>(sql, orderId);
+            var order = await _database.LoadDataAsync<OrderModel>(sql, orderId);
             return order;
         }
         public List<OrderModel> GetUndeliveredOrdersForUser(string user)

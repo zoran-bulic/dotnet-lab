@@ -63,6 +63,19 @@ namespace OrdersHandler.DataAccess
             }
         }
 
+        public async Task<T> LoadDataAsync<T>(string sql, int orderId)
+        {
+            using (IDbConnection conn = new SQLiteConnection(_connString))
+            {
+                var output = await conn.QueryAsync<T>(sql, orderId);
+                if (output != null && output.Count() > 0)
+                {
+                    return output.First();
+                }
+                return default(T);
+            }
+        }
+
         public async Task<int> InsertDataAsync<T>(string sql, T order)
         {
             int createdOrderId;
@@ -81,9 +94,12 @@ namespace OrdersHandler.DataAccess
             }            
         }
 
+        #region Helper methods
         private string LoadConnectionString(string id = _sqliteConnectionStringId)
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
         }
+
+        #endregion // Helper methods        
     }
 }

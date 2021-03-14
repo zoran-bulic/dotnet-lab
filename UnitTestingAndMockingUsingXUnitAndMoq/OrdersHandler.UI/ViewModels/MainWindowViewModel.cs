@@ -56,7 +56,7 @@ namespace OrdersHandler.UI.ViewModels
             {
                 if (getOrderCommand == null)
                 {
-                    getOrderCommand = new RelayCommand(p => GetOrder());
+                    getOrderCommand = new RelayCommand(p => GetOrder(OrderId));
                 }
                 return getOrderCommand;
             }            
@@ -125,7 +125,7 @@ namespace OrdersHandler.UI.ViewModels
             {
                 if (createNewOrderCommand == null)
                 {
-                    createNewOrderCommand = new RelayCommand(p => CreateNewOrder());
+                    createNewOrderCommand = new RelayCommand(p => CreateNewOrder(User, Address));
                 }
                 return createNewOrderCommand;
             }
@@ -144,11 +144,16 @@ namespace OrdersHandler.UI.ViewModels
             OrdersModel = new OrdersModel(orders);
         }
 
-        public void GetOrder()
+        public async void GetOrder(int orderId)
         {
-            Message = $"GetOrder() called, OrderId: '{OrderId}'";
-            var order = orderProcessor.GetOrder(OrderId);
-            OrdersModel = new OrdersModel(order);            
+            Message = $"GetOrder() called, OrderId: '{orderId}'";
+            var order = await orderProcessor.GetOrder(orderId);
+            OrdersModel = new OrdersModel(order);
+            OrderId = order.Id;
+            User = order.User;
+            Address = order.Address;
+            State = order.State;
+            DeliveryDate = order.DeliveryDate;
         }
 
         public void GetUndeliveredOrdersForUser()
@@ -187,7 +192,7 @@ namespace OrdersHandler.UI.ViewModels
 
         }
 
-        public async void CreateNewOrder()
+        public async void CreateNewOrder(string user, string address)
         {
             int createdOrderId;
             Message = "CreateNewOrder(User, Address) called";

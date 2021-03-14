@@ -59,13 +59,13 @@ namespace OrdersHandler.Tests.Integration
 
         [Theory]
         [InlineData("Wien", OrderState.Sent)]
-        public void UpdateOrder_ShouldUpdate_ForValidData(string address, OrderState state)
+        public async void UpdateOrder_ShouldUpdate_ForValidData(string address, OrderState state)
         {
             var orders = _orderProcessor.GetAllOrders();
             Random r = new Random();
             int ranIdx = r.Next(0, orders.Count);                        
             _orderProcessor.UpdateAddressAndStateOfOrder(ranIdx, address, state);            
-            var updatedOrder = _orderProcessor.GetOrder(ranIdx);
+            var updatedOrder = await _orderProcessor.GetOrder(ranIdx);
             Assert.Equal(address, updatedOrder.Address);
             Assert.Equal(state, updatedOrder.State);
         }

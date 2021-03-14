@@ -8,7 +8,7 @@ namespace OrdersHandler
     public interface IOrderProcessor
     {
         List<OrderModel> GetAllOrders();
-        OrderModel GetOrder(int orderId);
+        Task<OrderModel> GetOrder(int orderId);
         List<OrderModel> GetUndeliveredOrdersForUser(string user);
         List<OrderModel> GetDeliveredOrdersForUser(string user);
         bool IsOrderDelivered(int orderId);
