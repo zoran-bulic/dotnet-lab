@@ -75,12 +75,12 @@ namespace OrdersHandler.Tests.Unit
             OrderModel expected = GetSampleOrder();
             string sql = $"select * from Shipment where Id={expected.Id}";
             _dbDataAccessMock
-                .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
-                .Returns(expected);         
+                .Setup(x => x.LoadDataAsync<OrderModel>(sql, expected.Id))
+                .ReturnsAsync(expected);         
             var actual = await _orderProcessor.GetOrder(expected.Id);
             await _orderProcessor.UpdateAddressAndStateOfOrder(actual.Id, address, state);            
             sql = $"UPDATE Shipment SET Address='{actual.Address}', State='{actual.State}' WHERE Id='{actual.Id}'";
-            _dbDataAccessMock.Verify(x => x.UpdateData<OrderModel>(sql, actual), Times.Once);
+            _dbDataAccessMock.Verify(x => x.UpdateDataAsync<OrderModel>(sql, actual), Times.Once);
         }
 
         [Theory]
@@ -105,14 +105,14 @@ namespace OrdersHandler.Tests.Unit
             OrderModel expected = GetSampleOrder();
             string sql = $"select * from Shipment where Id={expected.Id}";
             _dbDataAccessMock
-                .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
-                .Returns(expected);            
+                .Setup(x => x.LoadDataAsync<OrderModel>(sql, expected.Id))
+                .ReturnsAsync(expected);            
             var actual = await _orderProcessor.GetOrder(expected.Id);
             DateTime deliveryDate = DateTime.Now;
-            _orderProcessor.DeliverOrder(actual.Id, deliveryDate);
+            await _orderProcessor.DeliverOrder(actual.Id, deliveryDate);
             string deliveryDateFormated = deliveryDate.ToString("yyyy-MM-dd HH:MM:ss");
             sql = $"UPDATE Shipment SET DeliveryDate='{deliveryDateFormated}', State='{OrderState.Delivered}' WHERE Id='{actual.Id}'";
-            _dbDataAccessMock.Verify(x => x.UpdateData<OrderModel>(sql, actual), Times.Once);
+            _dbDataAccessMock.Verify(x => x.UpdateDataAsync<OrderModel>(sql, actual), Times.Once);
         }
 
         [Fact]
@@ -120,21 +120,15 @@ namespace OrdersHandler.Tests.Unit
         {            
             OrderModel expected = GetSampleOrder();
             string sql = $"select * from Shipment where Id={expected.Id}";
-            //_dbDataAccessMock
-            //    .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
-            //    .Returns(expected);
-
             _dbDataAccessMock
-                .Setup(x => x.LoadDataAsync<OrderModel>(sql, expected.Id)).ReturnsAsync(expected);
-
-            //_dbDataAccessMock
-            //    .Setup(x => x.LoadDataAsync<OrderModel>(sql, expected.Id)).Returns(Task.FromResult(expected));
+                .Setup(x => x.LoadDataAsync<OrderModel>(sql, expected.Id))
+                .ReturnsAsync(expected);
             var actual = await _orderProcessor.GetOrder(expected.Id);
             DateTime deliveryDate = actual.CreationDate.AddDays(-1);
-            Assert.Throws<ArgumentException>(() => _orderProcessor.DeliverOrder(actual.Id, deliveryDate));            
+            await Assert.ThrowsAsync<ArgumentException>(() => _orderProcessor.DeliverOrder(actual.Id, deliveryDate));
             string deliveryDateFormated = deliveryDate.ToString("yyyy-MM-dd HH:MM:ss");
             sql = $"UPDATE Shipment SET DeliveryDate='{deliveryDateFormated}', State='{OrderState.Delivered}' WHERE Id='{actual.Id}'";
-            _dbDataAccessMock.Verify(x => x.UpdateData<OrderModel>(sql, actual), Times.Never);
+            _dbDataAccessMock.Verify(x => x.UpdateDataAsync<OrderModel>(sql, actual), Times.Never);
         }
 
         #region Helper Methods

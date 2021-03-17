@@ -60,10 +60,10 @@ namespace OrdersHandler
             return orderIsDelivered;
         }
 
-        public void DeliverOrder(int orderId, DateTime delivered)
+        public async Task DeliverOrder(int orderId, DateTime delivered)
         {
             string sql = $"select * from Shipment where Id={orderId}";
-            var order = _database.LoadData<OrderModel>(sql, orderId);
+            var order = await _database.LoadDataAsync<OrderModel>(sql, orderId);
             order.DeliveryDate = delivered;
 
             DateComparisonResult result = (DateComparisonResult)delivered.CompareTo(order.CreationDate);
@@ -75,7 +75,7 @@ namespace OrdersHandler
 
             string deliveryDateTimeFormated = order.DeliveryDate.ToString("yyyy-MM-dd HH:MM:ss");
             string sqlUpdate = $"UPDATE Shipment SET DeliveryDate='{deliveryDateTimeFormated}', State='{OrderState.Delivered}' WHERE Id='{orderId}'";
-            _database.UpdateData<OrderModel>(sqlUpdate, order);
+            await _database.UpdateDataAsync<OrderModel>(sqlUpdate, order);
         }
 
         public async Task UpdateAddressAndStateOfOrder(int orderId, string address, OrderState state)
@@ -86,7 +86,7 @@ namespace OrdersHandler
             }
 
             string sql = $"select * from Shipment where Id={orderId}";
-            var order = _database.LoadData<OrderModel>(sql, orderId);
+            var order = await _database.LoadDataAsync<OrderModel>(sql, orderId);
             order.Address = address;
             order.State = state;
 

@@ -12,7 +12,7 @@ namespace OrdersHandler
         List<OrderModel> GetUndeliveredOrdersForUser(string user);
         List<OrderModel> GetDeliveredOrdersForUser(string user);
         bool IsOrderDelivered(int orderId);
-        void DeliverOrder(int orderId, DateTime delivered);
+        Task DeliverOrder(int orderId, DateTime delivered);
         Task UpdateAddressAndStateOfOrder(int orderId, string address, OrderState state);
         Task<int> CreateNewOrder(string user, string address);
     }
