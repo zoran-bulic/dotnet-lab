@@ -60,17 +60,19 @@ jobs:
     working_directory: C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq
     steps:
       - checkout:
-          path: C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq\OrdersHandler.Tests.Unit
+          path: C:\Users\circleci\project\
       - run:
           name: "Run unit tests"
-          command: dotnet test
+          command: |
+              cd OrdersHandler.Tests.Unit
+              dotnet test
   integration-tests:
     executor:
       name: win/default
     working_directory: C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq
     steps:
       - checkout:
-          path: C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq
+          path: C:\Users\circleci\project
       - run:
           name: "Run integration tests"
           command: |
