@@ -3,25 +3,6 @@ version: 2.1
 orbs:
  win: circleci/windows@2.2.0
 
- workflows:
-  version: 2
-  build-application-and-run-tests:
-    triggers:
-      - schedule:
-        cron: "0 0 * * *"
-        filters:
-          branches:
-            only:
-              - master
-    jobs:
-      - build    
-      - unit-tests:
-        requires: 
-          - build
-      - integration-tests:
-        requires:
-          - build
-
 jobs:
   build:
     executor:
@@ -35,7 +16,7 @@ jobs:
             - dotnet-packages-v1-{{ checksum "OrdersHandler/OrdersHandler.csproj" }}            
       - run:
           name: "Install project dependencies for OrdersHandler.csproj"
-          command: dotnet.exe restore
+          command: dotnet restore
       - save_cache:
           paths:
             - C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq\.nuget\packages
@@ -45,7 +26,7 @@ jobs:
             - dotnet-packages-v1-{{ checksum "OrdersHandler.Tests.Integration/OrdersHandler.Tests.Integration.csproj" }}
       - run:
           name: "Install project dependencies for OrdersHandler.Tests.Integration.csproj"
-          command: dotnet.exe restore
+          command: dotnet restore
       - save_cache:
           paths:
             - C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq\.nuget\packages
@@ -55,7 +36,7 @@ jobs:
             - dotnet-packages-v1-{{ checksum "OrdersHandler.Tests.Unit/OrdersHandler.Tests.Unit.csproj" }}
       - run:
           name: "Install project dependencies for OrdersHandler.Tests.Unit.csproj"
-          command: dotnet.exe restore
+          command: dotnet restore
       - save_cache:
           paths:
             - C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq\.nuget\packages
@@ -65,19 +46,21 @@ jobs:
             - dotnet-packages-v1-{{ checksum "OrdersHandler.UI/OrdersHandler.UI.csproj" }}
       - run:
           name: "Install project dependencies for OrdersHandler.UI.csproj"
-          command: dotnet.exe restore
+          command: dotnet restore
       - save_cache:
           paths:
             - C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq\.nuget\packages
           key: dotnet-packages-v1-{{ checksum "OrdersHandler.UI/OrdersHandler.UI.csproj" }}
       - run:
           name: "Run Build step for the solution UnitTestingAndMockingUsingXUnitAndMoq.sln"
-          command: msbuild  -p:Configuration=Release
+          command: dotnet build
   unit-tests:
     executor:
       name: win/default
+    working_directory: C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq
     steps:
-      - checkout
+      - checkout:
+          path: C:\Users\circleci\project\
       - run:
           name: "Run unit tests"
           command: |
@@ -86,10 +69,23 @@ jobs:
   integration-tests:
     executor:
       name: win/default
+    working_directory: C:\Users\circleci\project\UnitTestingAndMockingUsingXUnitAndMoq
     steps:
-      - checkout
+      - checkout:
+          path: C:\Users\circleci\project
       - run:
           name: "Run integration tests"
           command: |
               cd OrdersHandler.Tests.Integration
               dotnet test
+workflows:
+  version: 2
+  build-and-run-tests:
+    jobs:
+      - build
+      - unit-tests:
+          requires:
+          - build
+      - integration-tests:
+          requires:
+          - build
