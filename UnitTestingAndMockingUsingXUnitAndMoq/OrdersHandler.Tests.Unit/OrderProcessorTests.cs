@@ -45,26 +45,26 @@ namespace OrdersHandler.Tests.Unit
         }
 
         [Fact]
-        public void IsOrderDelivered_ShouldReturnsTrue_ForDeliveredOrders()
+        public async void IsOrderDelivered_ShouldReturnsTrue_ForDeliveredOrders()
         {
             OrderModel expected = GetDeliveredSampleOrder();            
             string sql = $"select * from Shipment where Id={expected.Id}";
             _dbDataAccessMock
-                .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
-                .Returns(expected);
-            var actual = _orderProcessor.IsOrderDelivered(expected.Id);            
+                .Setup(x => x.LoadDataAsync<OrderModel>(sql, expected.Id))
+                .ReturnsAsync(expected);
+            var actual = await _orderProcessor.IsOrderDelivered(expected.Id);            
             Assert.True(actual);
         }
 
         [Fact]
-        public void IsOrderDelivered_ShouldReturnsFalse_ForNotDeliveredOrders()
+        public async void IsOrderDelivered_ShouldReturnsFalse_ForNotDeliveredOrders()
         {
             OrderModel expected = GetNotDeliveredSampleOrder();
             string sql = $"select * from Shipment where Id={expected.Id}";
             _dbDataAccessMock
-                .Setup(x => x.LoadData<OrderModel>(sql, expected.Id))
-                .Returns(expected);            
-            var actual = _orderProcessor.IsOrderDelivered(expected.Id);            
+                .Setup(x => x.LoadDataAsync<OrderModel>(sql, expected.Id))
+                .ReturnsAsync(expected);            
+            var actual = await _orderProcessor.IsOrderDelivered(expected.Id);            
             Assert.False(actual);
         }
 
@@ -96,7 +96,7 @@ namespace OrdersHandler.Tests.Unit
             var actual = await _orderProcessor.GetOrder(expected.Id);            
             await Assert.ThrowsAsync<ArgumentException>("Address", () => _orderProcessor.UpdateAddressAndStateOfOrder(actual.Id, address, state));
             sql = $"UPDATE Shipment SET Address='{actual.Address}', State='{actual.State}' WHERE Id='{actual.Id}'";
-            _dbDataAccessMock.Verify(x => x.UpdateData<OrderModel>(sql, actual), Times.Never);
+            _dbDataAccessMock.Verify(x => x.UpdateDataAsync<OrderModel>(sql, actual), Times.Never);
         }
 
         [Fact]

@@ -93,7 +93,7 @@ namespace OrdersHandler.Tests.Integration
             Random r = new Random();
             int ranIdx = r.Next(0, orders.Count);                        
             await _orderProcessor.UpdateAddressAndStateOfOrder(ranIdx, "Wien", OrderState.Delivered);
-            var output = _orderProcessor.IsOrderDelivered(ranIdx);
+            var output = await _orderProcessor.IsOrderDelivered(ranIdx);
             Assert.True(output);
         }
 
@@ -106,8 +106,7 @@ namespace OrdersHandler.Tests.Integration
             var notDeliveredOrder = ordersList.Find(x => x.State != OrderState.Delivered);
             Assert.NotNull(notDeliveredOrder);                        
             
-            _orderProcessor.IsOrderDelivered(notDeliveredOrder.Id);            
-            var output = _orderProcessor.IsOrderDelivered(notDeliveredOrder.Id);
+            var output = await _orderProcessor.IsOrderDelivered(notDeliveredOrder.Id);
             Assert.False(output);
         }
     }

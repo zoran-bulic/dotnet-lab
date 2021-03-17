@@ -34,25 +34,25 @@ namespace OrdersHandler
             var order = await _database.LoadDataAsync<OrderModel>(sql, orderId);
             return order;
         }
-        public List<OrderModel> GetUndeliveredOrdersForUser(string user)
+        public async Task<IList<OrderModel>> GetUndeliveredOrdersForUser(string user)
         {
             string sql = $"select * from Shipment where User='{user}' and State!='{OrderState.Delivered}'";
-            var orders = _database.LoadData<OrderModel>(sql);
+            var orders = await _database.LoadDataAsync<OrderModel>(sql);
             return orders;
         }
 
-        public List<OrderModel> GetDeliveredOrdersForUser(string user)
+        public async Task<IList<OrderModel>> GetDeliveredOrdersForUser(string user)
         {
             string sql = $"select * from Shipment where User='{user}' and State='{OrderState.Delivered}'";
-            var orders = _database.LoadData<OrderModel>(sql);
+            var orders = await _database.LoadDataAsync<OrderModel>(sql);
             return orders;
         }
 
-        public bool IsOrderDelivered(int orderId)
+        public async Task<bool> IsOrderDelivered(int orderId)
         {
             bool orderIsDelivered = false;
             string sql = $"select * from Shipment where Id={orderId}";
-            var order = _database.LoadData<OrderModel>(sql, orderId);
+            var order = await _database.LoadDataAsync<OrderModel>(sql, orderId);
             if(order.State == OrderState.Delivered)
             {
                 orderIsDelivered = true;

@@ -9,9 +9,9 @@ namespace OrdersHandler
     {
         Task<IList<OrderModel>> GetAllOrders();
         Task<OrderModel> GetOrder(int orderId);
-        List<OrderModel> GetUndeliveredOrdersForUser(string user);
-        List<OrderModel> GetDeliveredOrdersForUser(string user);
-        bool IsOrderDelivered(int orderId);
+        Task<IList<OrderModel>> GetUndeliveredOrdersForUser(string user);
+        Task<IList<OrderModel>> GetDeliveredOrdersForUser(string user);
+        Task<bool> IsOrderDelivered(int orderId);
         Task DeliverOrder(int orderId, DateTime delivered);
         Task UpdateAddressAndStateOfOrder(int orderId, string address, OrderState state);
         Task<int> CreateNewOrder(string user, string address);

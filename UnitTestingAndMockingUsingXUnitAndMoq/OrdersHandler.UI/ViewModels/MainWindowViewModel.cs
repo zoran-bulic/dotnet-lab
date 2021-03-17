@@ -163,23 +163,23 @@ namespace OrdersHandler.UI.ViewModels
             }
         }
 
-        public void GetUndeliveredOrdersForUser()
+        public async void GetUndeliveredOrdersForUser()
         {
             Message = "GetUndeliveredOrdersForUser() called";
-            var orders = orderProcessor.GetUndeliveredOrdersForUser(User);
+            var orders = await orderProcessor.GetUndeliveredOrdersForUser(User);
             OrdersModel = new OrdersModel(orders);
         }
-        public void GetDeliveredOrdersForUser()
+        public async void GetDeliveredOrdersForUser()
         {
             Message = "GetDeliveredOrdersForUser() called";
-            var orders = orderProcessor.GetDeliveredOrdersForUser(User);
+            var orders = await orderProcessor.GetDeliveredOrdersForUser(User);
             OrdersModel = new OrdersModel(orders);
         }
 
-        public void IsOrderDelivered()
+        public async void IsOrderDelivered()
         {
             Message = "IsOrderDelivered() called";
-            bool isOrderDelivered = orderProcessor.IsOrderDelivered(OrderId);
+            bool isOrderDelivered = await orderProcessor.IsOrderDelivered(OrderId);
             Message =  (isOrderDelivered)? $"Order Id:{OrderId} is delivered" :
                 $"Order Id:{OrderId} is still NOT delivered";
         }
