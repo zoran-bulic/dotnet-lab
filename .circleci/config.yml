@@ -79,5 +79,9 @@ workflows:
   build-and-run-tests:
     jobs:
       - build
-      - unit-tests        
-      - integration-tests
+      - unit-tests:
+          requires:
+          - build
+      - integration-tests:
+          requires:
+          - build
