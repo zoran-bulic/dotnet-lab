@@ -58,7 +58,8 @@ jobs:
     executor:
       name: win/default
     steps:
-      - checkout
+      - checkout:
+          path: C:\Users\circleci\project
       - run:
           name: "Run unit tests"
           command: |
@@ -68,7 +69,8 @@ jobs:
     executor:
       name: win/default
     steps:
-      - checkout
+      - checkout:
+          path: C:\Users\circleci\project
       - run:
           name: "Run integration tests"
           command: |
