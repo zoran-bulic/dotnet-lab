@@ -3,6 +3,7 @@ using OrdersHandler.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace OrdersHandler.Tests.Integration
@@ -68,7 +69,7 @@ namespace OrdersHandler.Tests.Integration
             var orders = await _orderProcessor.GetAllOrders();
             Random r = new Random();
             int ranIdx = r.Next(0, orders.Count);                        
-            _orderProcessor.UpdateAddressAndStateOfOrder(ranIdx, address, state);            
+            await _orderProcessor.UpdateAddressAndStateOfOrder(ranIdx, address, state);            
             var updatedOrder = await _orderProcessor.GetOrder(ranIdx);
             Assert.Equal(address, updatedOrder.Address);
             Assert.Equal(state, updatedOrder.State);
@@ -80,9 +81,8 @@ namespace OrdersHandler.Tests.Integration
         {
             var orders = await _orderProcessor.GetAllOrders();            
             Random r = new Random();
-            int ranIdx = r.Next(0, orders.Count);
-            //_orderProcessor.UpdateAddressAndStateOfOrder(ranIdx, address, state);
-            Assert.Throws<ArgumentException>("Address", () => _orderProcessor.UpdateAddressAndStateOfOrder(ranIdx, address, state));  
+            int ranIdx = r.Next(0, orders.Count);            
+            await Assert.ThrowsAsync<ArgumentException>(() => _orderProcessor.UpdateAddressAndStateOfOrder(ranIdx, address, state));            
         }
 
 
@@ -92,7 +92,7 @@ namespace OrdersHandler.Tests.Integration
             var orders = await _orderProcessor.GetAllOrders();
             Random r = new Random();
             int ranIdx = r.Next(0, orders.Count);                        
-            _orderProcessor.UpdateAddressAndStateOfOrder(ranIdx, "Wien", OrderState.Delivered);            
+            await _orderProcessor.UpdateAddressAndStateOfOrder(ranIdx, "Wien", OrderState.Delivered);
             var output = _orderProcessor.IsOrderDelivered(ranIdx);
             Assert.True(output);
         }

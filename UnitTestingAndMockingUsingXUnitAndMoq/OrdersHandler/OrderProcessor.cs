@@ -78,7 +78,7 @@ namespace OrdersHandler
             _database.UpdateData<OrderModel>(sqlUpdate, order);
         }
 
-        public async void UpdateAddressAndStateOfOrder(int orderId, string address, OrderState state)
+        public async Task UpdateAddressAndStateOfOrder(int orderId, string address, OrderState state)
         {           
             if (string.IsNullOrEmpty(address) || string.IsNullOrWhiteSpace(address))
             {
